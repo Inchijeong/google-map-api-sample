@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        var service = new google.maps.places.PlacesService(document.createElement('div'));;
+        var query = '롯데월드';
+
+        getPlaceSimple(query);
+
+        // 검색 쿼리로 장소 정보 받기
+        function getPlaceSimple(query){
+
+            // 받고 싶은 필드 목록
+            var basicFields = ['formatted_address', 'geometry', 'icon', 'id', 'name', 'permanently_closed', 'photos', 'place_id', 'plus_code', 'types'];
+            var contactFields = ['opening_hours', 'open_now'];
+            var atomosphereFields = ['price_level', 'rating'];
+            var totalFields = ['formatted_address', 'geometry', 'icon', 'id', 'name', 'permanently_closed', 'photos', 'place_id', 'plus_code', 'types', 'opening_hours', 'price_level', 'rating'];
+            var coustomFields = ['place_id'];
+            
+            var request = {
+                query: query,
+                fields: totalFields
+            };
+            
+            // 요청
+            service.findPlaceFromQuery(request, function(results, status){
+                if (status == google.maps.places.PlacesServiceStatus.OK) {
+                    var arr = new Array();
+                    for (var i = 0; i < results.length; i++) {
+                        var place = results[i];
+                        console.log(place);
+                        console.log(place.photos[0].getUrl());
+                        // service.getDetails(place.placeId, function(PlaceResult, PlacesServiceStatus){
+                        //     console.log('PlaceResult ',PlaceResult);
+                        // });
+                        getPlaceDetail(place.place_id);
+                    }
+                }else if(status == google.maps.places.PlacesServiceStatus.INVALID_REQUEST){
+                    console.log('INVALID_REQUEST ', status);
+                }else if(status == google.maps.places.PlacesServiceStatus.ERROR){
+                    console.log('ERROR ', status);
+                }else if(google.maps.places.PlacesServiceStatus.ZERO_RESULTS){
+                    console.log('ZERO_RESULTS ', status);
+                }
+            });
+        }
+
+        // 장소 ID로 상세 정보 받기
+        function getPlaceDetail(searchPlaceID){
+
+            // 받고 싶은 필드 목록
+            var basicFields = ['address_component', 'adr_address', 'alt_id', 'formatted_address', 'geometry', 'icon', 'id', 'name', 'permanently_closed', 'photo', 'place_id', 'plus_code', 'scope', 'type', 'url', 'utc_offset', 'vicinity'];
+            var contactFields = ['formatted_phone_number', 'international_phone_number', 'opening_hours', 'website'];
+            var atomosphereFields = ['price_level', 'rating', 'review'];
+
+            var totalFields = ['address_component', 'adr_address', 'alt_id', 'formatted_address', 'geometry', 'icon', 'id', 'name',
+            'permanently_closed', 'photo', 'place_id', 'plus_code', 'scope', 'type', 'url', 'utc_offset', 'vicinity', 'formatted_phone_number',
+            'international_phone_number', 'opening_hours', 'website', 'price_level', 'rating', 'review'];
+            var coustomFields = [''];
+
+            var request = {
+                placeId: searchPlaceID,
+                fields: totalFields
+            };
+            
+            service.getDetails(request, function(results, status){
+                if (status == google.maps.places.PlacesServiceStatus.OK) {
+                    console.log(results);
+                    console.log(results.geometry.location.lat() , results.geometry.location.lng());
+                }else if(status == google.maps.places.PlacesServiceStatus.INVALID_REQUEST){
+                    console.log('INVALID_REQUEST ', status);
+                }else if(status == google.maps.places.PlacesServiceStatus.ERROR){
+                    console.log('ERROR ', status);
+                }else if(google.maps.places.PlacesServiceStatus.ZERO_RESULTS){
+                    console.log('ZERO_RESULTS ', status);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

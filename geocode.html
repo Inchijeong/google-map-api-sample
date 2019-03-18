@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+    <title>Document</title>
+</head>
+<body>
+    <p id="result"></p>
+    <script>
+        document.addEventListener('DOMContentLoaded', function(event){
+            codeAddress();
+        });
+        function codeAddress() {
+
+            var geocoder = new google.maps.Geocoder();
+            var address = 'Jeju-do, Jeju, Ildo 1(il)-dong, 1476-20';
+            
+            geocoder.geocode( { 'address': address}, function(results, status) {
+                if (status == 'OK') {
+                    results.forEach(element => {
+                        console.log(element);
+                        document.getElementById('result').innerText = element;
+                    });
+                } else {
+                    alert('Geocode was not successful for the following reason: ' + status);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
